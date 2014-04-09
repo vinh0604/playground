@@ -23,13 +23,26 @@ mkdir -p ~/Projects/harbormaster
 cd ~/Projects/harbormaster
 git clone https://github.com/harbormaster/smartypants.git
 ```
-Change in the created directory ```smartypants``` and open its contents in your favourite editor.
+Change in the created directory ```smartypants``` and checkout the ```getting-started``` git tag.
+
+```bash
+cd smartypants
+git checkout getting-started
+```
+
+Now you should see something along the lines of this when you list the directory contents:
+
+```bash
+ls
+
+Readme.md  Vagrantfile
+```
 
 ### Setup a Vagrant instance with Docker
 
 Get your copy of the Vagrant box named ```saucy-docker``` from the organizer. Change the path in your ```Vagrantfile``` accordingly.
 
-Your Vagrantfile should similar to this:
+Your Vagrantfile should be similar to this:
 
 ```ruby
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -59,6 +72,16 @@ Git commit (client): 3600720
 Server version: 0.9.1
 Git commit (server): 3600720
 Go version (server): go1.2.1
+```
+
+Furthermore, the ```smartypants``` folder on the host machine (your laptop) should be synced with the ```/vagrant``` folder on the VM.
+
+Let's check that:
+
+```bash
+cd /vagrant && ls
+
+Readme.md  Vagrantfile
 ```
 
 Cool, let's do some actual Docker things :)
