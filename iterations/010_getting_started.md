@@ -14,6 +14,17 @@ Vagrant is available for Linux, Mac OSX and Windows. You can download it [here](
 
 Please follow the installation instructions according to your operating system.
 
+### Setup The Project
+
+Time to get the actual environment for today's workshop.
+
+```bash
+mkdir -p ~/Projects/harbormaster
+cd ~/Projects/harbormaster
+git clone https://github.com/harbormaster/smartypants.git
+```
+Change in the created directory ```smartypants``` and open its contents in your favourite editor.
+
 ### Setup a Vagrant instance with Docker
 
 Get your copy of the Vagrant box named ```saucy-docker``` from the organizer. Change the path in your ```Vagrantfile``` accordingly.
