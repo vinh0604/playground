@@ -67,7 +67,7 @@ docker run --name=hello-docker stackbrew/ubuntu:saucy /bin/bash -lc 'echo "Hello
 Note about flags:
 
 - ```--name``` can be provided as a known identifier for the container. The name has to be unique. If it's omitted Docker will automatically generate a name
-- 
+
 This commands runs the part after the image name (stackbrew/ubuntu:saucy) as command inside the container and exits immediately. Hence, we should have created a file inside the container.
 
 #### Diff
