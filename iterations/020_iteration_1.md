@@ -58,7 +58,7 @@ Ok, let's create and share a simple image with our peers.
 
 #### Prepare
 
-Let's add a simple file to one container (Don't forget to replace <YOUR-NAME> with your actual name)
+Let's add a simple file to one container (Don't forget to replace ```<YOUR-NAME>``` with your actual name)
 
 ```
 docker run --name=hello-docker stackbrew/ubuntu:saucy /bin/bash -lc 'echo "Hello Docker from <YOUR-NAME>" > /hello-docker'
@@ -135,5 +135,9 @@ docker run --rm playground/hello-docker:superman cat /hello-docker
 We've done basic operations around creating / sharing images via the Docker Index. When you're familiar with Git and Github, those concepts should be well known to you.
 
 ![git vs docker](../images/docker-vs-git.001.png)
+
+Furthermore, we've worked with the ```playground/hello-docker``` repository, which now contains a bunch of images. This concept will be quite useful later on.
+
+![git vs docker](../images/playground-hello-docker.png)
 
 So much for the first iteration. In the next one, we'll start with building a container for a simple Sinatra App (written in Ruby).
