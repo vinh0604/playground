@@ -2,7 +2,7 @@
 
 Let's explore some basic concepts of Docker.
 
-### Docker Images
+### Docker Images 101
 
 Docker Images are the key element of Docker and the base for every container you'll run. There is a public registry hosted by Docker called ```index```. You can find it over [here](https://index.docker.io). You'll find a bunch of publicly available images for pretty much everything you want (plain Ubuntu, Ruby, Python, PHP, etc). These are a good starting point to build your own container.
 
@@ -20,109 +20,120 @@ To make it a little bit clearer what's going on, let's take a look the following
 
 It visualizes two language specific images (Ruby & Go), which are based on Ubuntu Saucy. As you can see, both are sharing the same Ubuntu image. The unnamed commits in between are build steps on the way to the final image and can be ignored for now (we'll come back to this later).
 
-#### The Registry (Index)
+#### Locally available images
 
-As mentioned above, Docker provides a registry. Let's do something useful. We're looking for a small linux distribution in the container. Let's open the registry web-site and look for ```busybox``` and see what it does.
-
-https://index.docker.io
-
-### Pull
-
-As you've made yourself familiar with the ```busybox``` repository on the Docker index (e.g. it's an offical repository, hence you can trust it), let's play around with it.
+We've prepared the Vagrant box with a few images so you won't have to download hundreds of Megabytes of data. Let's check:
 
 ```
-docker pull busybox
+docker images
 ```
 
-### Run
-
-Awesome, time to get our first container up an running.
+You should see something along the lines of this:
 
 ```
-docker run -i -t busybox /bin/echo Hello Docker
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+dockerfile/redis    latest              b01b75039f13        12 weeks ago        561.9 MB
+stackbrew/ubuntu    13.10               24ba2ee5d982        3 months ago        144.6 MB
+stackbrew/ubuntu    saucy               24ba2ee5d982        3 months ago        144.6 MB
+stackbrew/ubuntu    13.04               0e5997dad26c        3 months ago        133.6 MB
+stackbrew/ubuntu    raring              0e5997dad26c        3 months ago        133.6 MB
+stackbrew/ubuntu    12.10               ddc094db4e2b        3 months ago        127.6 MB
+stackbrew/ubuntu    quantal             ddc094db4e2b        3 months ago        127.6 MB
+stackbrew/ubuntu    12.04               3aa646e4f1d2        3 months ago        125.9 MB
+stackbrew/ubuntu    latest              3aa646e4f1d2        3 months ago        125.9 MB
+stackbrew/ubuntu    precise             3aa646e4f1d2        3 months ago        125.9 MB
 ```
 
-That's not really exciting. Let's open a shell inside the container.
+Alright, but are these really different ubuntu systems there?
 
 ```
-docker run -i -t --name=echo-hello-docker busybox /bin/sh
+docker run --rm stackbrew/ubuntu:saucy lsb_release -a
 ```
 
-Note: we use the ```--name``` flag to have a known identifier for the container. The name has to be unique.
- 
-Once you're inside the shell session, feel free to look around. Once you're done, add some text to a file and exit it.
+Test it with another tag and see the difference yourself.
+
+### Hello Docker Festival
+
+Ok, let's create and share a simple image with our peers. 
+
+#### Prepare
+
+Let's add a simple file to one container (Don't forget to replace <YOUR-NAME> with your actual name)
 
 ```
-echo "Hello Docker" > ~/hello-docker
-exit
+docker run --name=hello-docker stackbrew/ubuntu:saucy /bin/bash -lc 'echo "Hello Docker from <YOUR-NAME>" > /hello-docker'
 ```
 
-### Diff
+Note about flags:
 
-As we've done some stuff with the ```echo-hello-docker``` container, let's see what we've changed:
+- ```--name``` can be provided as a known identifier for the container. The name has to be unique. If it's omitted Docker will automatically generate a name
+- 
+This commands runs the part after the image name (stackbrew/ubuntu:saucy) as command inside the container and exits immediately. Hence, we should have created a file inside the container.
+
+#### Diff
+
+Let's see if we've actually change something:
 
 ```
-docker diff echo-hello-docker
+docker diff hello-docker
 ```
-Remember that a Docker image is comparable to Git? Well, that's pretty much the same here.
 
-### Commit
+#### Commit & Tag
 
-Save
+In order to share our hard work we have to commit the container to an image. As we want to refer to this commit by an easy to remember name, let's tag it with your name.
 
-### Tag
+```
+docker commit -a "<YOUR-NAME>" -m "Hello Docker" hello-docker playground/hello-docker:<YOUR-NAME>
+```
+
+Note:
+
+- ```-a``` Author name
+- ```-m``` Commit Message
+
+#### Confirm
+
+Before we are going to share this, let's confirm we've done everything right:
+
+```
+docker run --rm playground/hello-docker:<YOUR-NAME> cat /hello-docker
+```
+
+#### Share
+
+Well done, time to share this our awesome image with everybody else.
+
+```
+docker push playground/hello-docker
+```
+
+This automagically works, as the Vagrant box is authenticated for the Docker Index as ```playground``` user already. You should be able to see your tag online here: https://index.docker.io/u/playground/hello-docker/tags/
+
+Now let's see if anybody else has pushed his work already:
+
+```
+docker pull playground/hello-docker
+```
+
+And list only the images we're interested in
+
+```
+docker images playground/hello-docker
+REPOSITORY                TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+playground/hello-docker   john                98772ca78247        4 minutes ago       144.6 MB
+playground/hello-docker   <YOUR-NAME>         64f602ceead7        12 minutes ago      144.6 MB
+```
+
+Sweet, John has pushed something. Let's check what he did:
+
+```
+docker run --rm playground/hello-docker:superman cat /hello-docker
+```
 
 ### Recap
 
-The commands around the docker image are conceptually pretty close to what git does:
+We've done basic operations around creating / sharing images via the Docker Index. When you're familiar with Git and Github, those concepts should be well known to you.
 
 ![git vs docker](../images/docker-vs-git.001.png)
 
-### Run as Daemon
-
-```
-docker run -d --name=hello-docker busybox /bin/sh -c "while true; do echo hello docker; sleep 1; done"
-```
-
-### PS
-
-Sweet, now you've built a daemonized container. Let's look if it's running:
-
-```
-docker ps
-CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS               NAMES
-d631f563b7c5        busybox:latest      /bin/sh -c while tru   3 minutes ago       Up 3 minutes                            hello-docker
-```
-
-Looks like something is there, but what the heck is it doing?
-
-### Logs
-
-Accessing the logs is one way:
-
-```
-docker logs -f hello-docker
-```
-
-### Attach
-
-Another way to access a daemonized container woudl be attaching to it's process.
-
-```
-docker attach --sig-proxy=false hello-docker
-``` 
-Note: ```--sig-proxy=false``` will keep the container running when you detach via ```<strg> + <c>```
-
-### Inspect
-
-When you want to look into the container meta-data, inspect is your friend. You'll find stuff like:
-
-- Network Settings
-- Config
-- Current State
-- And lots more...
-
-```
-docker inspect hello-docker
-```
-Let's see if you can find the IP-address. Try to ping the container!
+So much for the first iteration. In the next one, we'll start with building a container for a simple Sinatra App (written in Ruby).
