@@ -19,12 +19,12 @@ To keep things simple, the first version of this app is fully self-contained and
 
 You should have cloned the app already, in case you haven't, please do it now: https://github.com/harbormaster/smartypants
 
-Time to get things rolling. Check out the Git tag ```iteration-1``` and take some time to explore the app.
+Time to get things rolling. Check out the Git tag ```iteration-2``` and take some time to explore the app.
 
 Hint: The most interesting parts are ```Dockerfile``` and ```smartypants.rb```
 
 ```
-git checkout iteration-1
+git checkout iteration-2
 ```
 
 #### Dockerfile
@@ -38,6 +38,8 @@ ADD . /app/
 WORKDIR /app/
 ```
 A Dockerfile is pretty much like a Makefile for containers. In this case, it takes the ```harbormaster/ruby:latest``` image as base image and copies the current working directory into the container (under ```/app```).
+
+Note: [harbormaster/ruby:latest](https://index.docker.io/u/harbormaster/ruby/) is a ready to go Ruby image and built via the Docker Index.
 
 One interesting thing to know about Dockerfiles: Each step equals to a separate commit to the resulting Docker image and therefore will be cached for the next time you'll build the file. This is beneficial when you have expensive build steps in your Dockerfile.
 
@@ -96,7 +98,7 @@ Another way to inspect what's going on is the [DockerUI](http://192.168.33.10:90
 
 * Find the IP address of the app container and try to access it.
 * Make it accessible to your browser
-* Make the previous steps repeatable (via Dockerfile)
+* Make the previous steps repeatable (via [Dockerfile](http://docs.docker.io/en/latest/reference/builder/))
 
 Hint:
 
