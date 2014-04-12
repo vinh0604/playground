@@ -92,7 +92,7 @@ CONTAINER ID        IMAGE                              COMMAND                CR
 
 Another way to inspect what's going on is the [DockerUI](http://192.168.33.10:9000).
 
-#### Excercise 
+### Excercise 
 
 * Find the IP address of the app container and try to access it.
 * Make it accessible to your browser
